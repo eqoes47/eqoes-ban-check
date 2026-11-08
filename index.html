@@ -1,1 +1,48 @@
 <h1>Check ban status by eqoes</h1>
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Nummern-Prüfer</title>
+</head>
+<body>
+    <h1>WhatsApp Nummern-Prüfer</h1>
+    
+    <input type="text" id="phoneInput" placeholder="Nummer z.B. +49123456789">
+    <button onclick="checkNumber()">Prüfen</button>
+    
+    <p id="result"></p>
+
+    <script>
+        async function checkNumber() {
+            const phoneNumber = document.getElementById('phoneInput').value;
+            const resultElement = document.getElementById('result');
+            
+            resultElement.textContent = "Prüfe...";
+
+            try {
+                // Sendet die Nummer an dein lokales Backend
+                const response = await fetch('http://localhost:3000/check', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ phoneNumber })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    resultElement.textContent = `Ergebnis: ${data.message}`;
+                } else {
+                    resultElement.textContent = `Fehler: ${data.error}`;
+                }
+            } catch (error) {
+                resultElement.textContent = "Verbindung zum Backend fehlgeschlagen.";
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
